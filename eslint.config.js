@@ -38,7 +38,7 @@ export default [
           },
           extends: ["eslint:recommended"],
           rules: {
-            "no-undef": "off", // або "warn", якщо хочете попередження замість помилки
+            "no-undef": "off",
           },
         },
       ],
