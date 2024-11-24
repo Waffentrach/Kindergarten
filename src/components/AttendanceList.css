@@ -1,0 +1,46 @@
+.attendance-list {
+  width: 100%;
+  max-width: 800px;
+  margin-top: 30px;
+  list-style-type: none;
+  padding: 0;
+  margin-bottom: 50px;
+}
+
+.attendance-list li {
+  background-color: #fff;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.attendance-list li p {
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+.attendance-list li strong {
+  color: #333;
+}
+
+.attendance-list li .absence-details {
+  margin-top: 10px;
+  font-style: italic;
+}
+
+.attendance-list li .absence-details p {
+  margin: 5px 0;
+}
+
+@media (max-width: 768px) {
+  .attendance-list {
+    padding: 0 10px;
+  }
+
+  .attendance-list li {
+    padding: 15px;
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,76 @@
+.attendance-form {
+   
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+   
+    margin-top: 20px;
+}
+
+.attendance-form label {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.attendance-form input[type="text"],
+.attendance-form input[type="date"],
+.attendance-form input[type="checkbox"],
+.attendance-form select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0 20px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.attendance-form input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.attendance-form button {
+    background-color: #333;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.attendance-form button:hover {
+    background-color: #555;
+}
+
+/* Стилі для помилки */
+.error-message {
+    color: red;
+    margin: 10px 0;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .attendance-form {
+        width: 90%;
+        padding: 15px;
+    }
+
+    .attendance-form label {
+        font-size: 14px;
+    }
+
+    .attendance-form input[type="text"],
+    .attendance-form input[type="date"],
+    .attendance-form input[type="checkbox"],
+    .attendance-form select {
+        font-size: 14px;
+    }
+
+    .attendance-form button {
+        font-size: 16px;
+    }
+}

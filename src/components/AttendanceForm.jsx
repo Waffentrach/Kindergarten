@@ -1,52 +1,48 @@
-import  { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
+import './AttendanceForm.css';
 
-function AttendanceForm({ setAttendanceData, setError }) {
-  const [childName, setChildName] = useState('');
-  const [date, setDate] = useState('');
-  const [group, setGroup] = useState('');
-  const [isPresent, setIsPresent] = useState(true);
-  const [absenceStartDate, setAbsenceStartDate] = useState('');
-  const [absenceEndDate, setAbsenceEndDate] = useState('');
-  const [absenceReason, setAbsenceReason] = useState('');
-  const [hasMedicalNote, setHasMedicalNote] = useState(false);
+function AttendanceForm({
+  setAttendanceData,
+  setError,
+  editingData,
+  setIsEditing,
+  isEditing,
+  attendanceData,
+  setEditingData
+}) {
+   const [childName, setChildName] = useState(editingData?.childName || ''); // ініціалізація значення
+  const [date, setDate] = useState(editingData?.date || ''); // ініціалізація значення
+  const [group, setGroup] = useState(editingData?.group || ''); // ініціалізація значення
+  const [isPresent, setIsPresent] = useState(editingData?.isPresent ?? true); // ініціалізація значення
+  const [absenceStartDate, setAbsenceStartDate] = useState(editingData?.absenceStartDate || '');
+  const [absenceEndDate, setAbsenceEndDate] = useState(editingData?.absenceEndDate || '');
+  const [absenceReason, setAbsenceReason] = useState(editingData?.absenceReason || '');
+  const [hasMedicalNote, setHasMedicalNote] = useState(editingData?.hasMedicalNote ?? false);
+  const [medicalNoteFile, setMedicalNoteFile] = useState(editingData?.medicalNoteFile || null);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!group || (isPresent && !date) || (!isPresent && (!absenceStartDate || !absenceEndDate || !absenceReason)) || !childName) {
-      setError('Будь ласка, заповніть всі обов\'язкові поля.');
-      return;
+  useEffect(() => {
+    const storedData = localStorage.getItem('attendanceData');
+    if (storedData) {
+      setAttendanceData(JSON.parse(storedData));
     }
+  }, []);
 
-    if (!isPresent) {
-      const start = new Date(absenceStartDate);
-      const end = new Date(absenceEndDate);
-      const diffTime = end - start;
-      const diffDays = diffTime / (1000 * 3600 * 24);
-
-      if (diffDays > 3 && !hasMedicalNote) {
-        setError('Якщо пропуск більше ніж 3 дні, потрібно надати довідку від лікаря.');
-        return;
-      }
+  useEffect(() => {
+    if (editingData) {
+      setChildName(editingData.childName);
+      setDate(editingData.date);
+      setGroup(editingData.group);
+      setIsPresent(editingData.isPresent);
+      setAbsenceStartDate(editingData.absenceStartDate);
+      setAbsenceEndDate(editingData.absenceEndDate);
+      setAbsenceReason(editingData.absenceReason);
+      setHasMedicalNote(editingData.hasMedicalNote);
+      setMedicalNoteFile(editingData.medicalNoteFile);
     }
-
-    // Створення нового запису
-    const newAttendance = {
-      childName,
-      group,
-      date: isPresent ? date : `${absenceStartDate} - ${absenceEndDate}`,
-      isPresent,
-      absenceReason,
-      hasMedicalNote,
-    };
-
-    // Додаємо новий запис в дані
-    setAttendanceData((prevData) => [...prevData, newAttendance]);
-
-    // Оновлення форми
-    resetForm();
-  };
+  }, [editingData]);
 
   const resetForm = () => {
     setChildName('');
@@ -57,6 +53,96 @@ function AttendanceForm({ setAttendanceData, setError }) {
     setAbsenceEndDate('');
     setAbsenceReason('');
     setHasMedicalNote(false);
+    setMedicalNoteFile(null);
+  };
+
+  const saveDataToLocalStorage = (newData) => {
+    const updatedData = [...attendanceData, newData];
+    localStorage.setItem('attendanceData', JSON.stringify(updatedData)); 
+    setAttendanceData(updatedData);
+  };
+
+  // Перевірка форми
+  const validateForm = () => {
+    // Перевірка наявності обов'язкових полів
+    if (!childName || !group) {
+      setError('Будь ласка, заповніть всі обов\'язкові поля.');
+      return false;
+    }
+
+    // Перевірка правильності ПІБ
+    const nameRegex = /^[A-ZА-Я][a-zа-яёіїєґ'`-]+( [A-ZА-Я][a-zа-яёіїєґ'`-]+){1,2}$/;
+    if (!nameRegex.test(childName)) {
+      setError('Невірний формат ПІБ. Використовуйте лише літери і пробіли.');
+      return false;
+    }
+
+    // Перевірка на групу
+    const groupRegex = /^[A-Za-z0-9А-Яа-яЇїЄєІіҐґ]+$/;
+    if (!groupRegex.test(group)) {
+      setError('Група має містити тільки літери та цифри.');
+      return false;
+    }
+
+    if (isPresent && !date) {
+      setError('Будь ласка, вкажіть дату присутності.');
+      return false;
+    }
+
+    if (!isPresent && (!absenceStartDate || !absenceEndDate || !absenceReason)) {
+      setError('Будь ласка, заповніть всі поля для відсутності.');
+      return false;
+    }
+
+    // Перевірка на довідку, якщо відсутність більше ніж 3 дні
+    if (!isPresent) {
+      const absenceDuration = Math.ceil((new Date(absenceEndDate) - new Date(absenceStartDate)) / (1000 * 60 * 60 * 24));
+      if (absenceDuration > 3 && !hasMedicalNote) {
+        setError('Якщо відсутність більше ніж 3 дні, потрібна довідка від лікаря.');
+        return false;
+      }
+    }
+
+    // Якщо є медична довідка, перевірка на наявність файлу
+    if (hasMedicalNote && !medicalNoteFile) {
+      setError('Будь ласка, прикріпіть довідку від лікаря.');
+      return false;
+    }
+
+    setError('');
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    const newAttendance = {
+      childName,
+      group,
+      date: isPresent ? date : `${absenceStartDate} - ${absenceEndDate}`,
+      isPresent,
+      absenceReason,
+      hasMedicalNote,
+      medicalNoteFile,
+    };
+
+    // Якщо редагування, оновлюємо запис
+    if (isEditing) {
+      const updatedData = attendanceData.map(entry =>
+        entry.childName === editingData.childName ? newAttendance : entry
+      );
+      setAttendanceData(updatedData);
+      localStorage.setItem('attendanceData', JSON.stringify(updatedData));
+    } else {
+      saveDataToLocalStorage(newAttendance);
+    }
+
+    resetForm();
+    setIsEditing(false);
+    setEditingData(null);
+    navigate('/attendance');
   };
 
   return (
@@ -143,18 +229,35 @@ function AttendanceForm({ setAttendanceData, setError }) {
               onChange={(e) => setHasMedicalNote(e.target.checked)}
             />
           </label>
+
+          {hasMedicalNote && (
+            <div>
+              <label>
+                Прикріпіть довідку від лікаря (PDF, зображення):
+                <input
+                  type="file"
+                  accept="application/pdf, image/*"
+                  onChange={(e) => setMedicalNoteFile(e.target.files[0])}
+                />
+              </label>
+            </div>
+          )}
         </div>
       )}
 
-      <button type="submit">Додати запис</button>
+      <button type="submit">{isEditing ? 'Зберегти зміни' : 'Додати запис'}</button>
     </form>
   );
 }
 
-// Валідація пропсів
 AttendanceForm.propTypes = {
+  attendanceData: PropTypes.array.isRequired,
   setAttendanceData: PropTypes.func.isRequired,
   setError: PropTypes.func.isRequired,
+  setIsEditing: PropTypes.func.isRequired,
+  setEditingData: PropTypes.func.isRequired,
+  editingData: PropTypes.object,
+  isEditing: PropTypes.bool.isRequired,
 };
 
 export default AttendanceForm;

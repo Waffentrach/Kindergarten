@@ -1,0 +1,156 @@
+.history-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    max-width: 900px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin: 20px;
+}
+
+.history-page h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.search-form {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.search-form label {
+    display: flex;
+    flex-direction: column;
+    font-size: 1rem;
+    color: #333;
+}
+
+.search-form input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.attendance-list {
+    width: 100%;
+    max-width: 800px;
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.attendance-list li {
+    background-color: #f9f9f9;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.attendance-list li p {
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+.attendance-list li strong {
+    color: #333;
+}
+
+.absence-details {
+    margin-top: 10px;
+    font-style: italic;
+}
+
+.absence-details p {
+    margin: 5px 0;
+}
+
+.empty-history-message {
+    font-size: 1.2rem;
+    text-align: center;
+    color: #777;
+    margin-top: 20px;
+}
+
+button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #f894eb;
+}
+
+button:active {
+    background-color: #e02cc2;
+}
+
+button.edit-button {
+    background-color: #007BFF;
+}
+
+button.edit-button:hover {
+    background-color: #0056b3;
+}
+
+button.edit-button:active {
+    background-color: #004085;
+}
+
+button.delete-button {
+    background-color: #dc3545;
+}
+
+button.delete-button:hover {
+    background-color: #c82333;
+}
+
+button.delete-button:active {
+    background-color: #bd2130;
+}
+
+button {
+    margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+    .history-page {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .attendance-list li {
+        padding: 15px;
+        font-size: 14px;
+    }
+
+    .attendance-list li p {
+        font-size: 14px;
+    }
+
+    .history-page h2 {
+        font-size: 1.8rem;
+    }
+}
